@@ -1,8 +1,8 @@
 
 # Template for a React - Express - Node - MySQL stack
-A simple counter app
 
 ## Steps to reproduce
+1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed.
 
 ### Create a backend Node server with Express
 1. Initialize git project, e.g. with `git init` or from GitHub/GitLab
@@ -14,11 +14,11 @@ A simple counter app
 // .gitignore
 node_modules/
 ```
-4. Install Express `npm i express`
-5. Create the following file:
+1. Install Express `npm i express` and nodemon `npm i nodemon --save-dev`
+2. Create the following file:
 ```js
 // server/index.js
-const express = require("express");
+import express from 'express';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -26,15 +26,16 @@ const app = express();
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
+
 ```
-6. Add `"server": "node server/index.js"` to `scripts` in `package.json`
-7. Start the server `npm run server`
+6. Add `"type": "module"` to `package.json`
+7. Add `"server": "nodemon node server/index.js"` to `scripts` in `package.json`
+8. Start the server `npm run server`
    - `ctrl+C` in terminal to stop the server
 
 ### Create an SQLite database
 1. Install SQLite and SQLite3 `npm i sqlite sqlite3`
 2. Create the following file:
-
 ```js
 // server/db.js
 import sqlite3 from 'sqlite3';
@@ -54,23 +55,27 @@ class Database {
   }
   
   async initNumbers() {
+    console.log("[DB] Init");
     await this.db.exec('CREATE TABLE IF NOT EXISTS numbers (number int)');
   }
   
   async getNumbers() {
+    console.log("[DB] GET");
     return await this.db.all('SELECT * FROM numbers');
   }
   
   async insertNumber(number) {
+    console.log("[DB] INSERT " + number);
     await this.db.exec('INSERT INTO numbers (number) VALUES (' + number + ')');
   }
 
   async clearNumbers() {
+    console.log("[DB] CLEAR");
     await this.db.exec('DELETE FROM numbers');
   }
 }
 ```
-3. Create an empty file `data/database.db`
+3. Create an empty file `data/database.db` and add `data/` to `.gitignore`
 4. Make the following additions to  `server/index.js`:
 ```diff
 import express from 'express';
@@ -86,9 +91,10 @@ const app = express();
 +  result.send("Random numbers: " + JSON.stringify(await db.getNumbers()));
 +})
 
-+app.get('/api/add', (request, result) => {
-+  db.insertNumber(Math.floor(Math.random() * 100));
-+  result.send("Added a random number (0-100)!");
++app.get('/api/insert', (request, result) => {
++  let number = Math.floor(Math.random() * 100)
++  db.insertNumber(number);
++  result.send("Inserted " + number);
 +})
 
 +app.get('/api/clear', (request, result) => {
@@ -100,7 +106,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 ```
-5. Start the server with `npm run server` and make sure `localhost:3001/api/get`, `localhost:3001/api/add` and `localhost:3001/api/clear` are working.
+5. Start the server with `npm run server` and make sure `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear` are working.
 
 ### Create a React frontend
 1. Initialize React `npx create-react-app client`
@@ -108,4 +114,75 @@ app.listen(PORT, () => {
 2. Add `"proxy": "http://localhost:3001"` to `client/package.json`
    - To communicate with the server, running on port `3001`
 3. Add `"client": "cd client && npm start"` to `scripts` in `package.json`
-4. Start the React app `npm run client`
+4. Replace the contents of `client/src/App.js` with the following:
+```js
+import logo from './logo.svg';
+import './App.css';
+import { useEffect, useState } from "react";
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {NumbersComponent()}
+      </header>
+    </div>
+  );
+}
+
+function NumbersComponent() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [numbers, setNumbers] = useState([]);
+  
+  const getNumbers = async () => {
+    fetch('/api/get')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setNumbers(result);
+        },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      )
+  }
+  const insertNumber = () => {
+    fetch('/api/insert').then(() => getNumbers())
+  }
+  const clearNumbers = () => {
+    fetch('/api/clear').then(() => getNumbers())
+  }
+
+  useEffect(() => getNumbers(), [])
+
+  if (error) {
+    return <div>Error: {error.message} {numbers}</div>;
+  } else if (!isLoaded) {
+    return <div>Loading...</div>;
+  } else {
+    return (
+      <div>
+      <ul>
+        <p>Numbers:</p>
+        {numbers.map(number => (
+          <li>
+            {number.number}
+          </li>
+        ))}
+      </ul>
+      <button onClick={insertNumber}>Insert number</button>
+      <button onClick={clearNumbers}>Clear numbers</button>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+1. Start the server `npm run server`
+2. Open **another terminal** and start the client `npm run client`
+3. Open `localhost:3000` and make sure that the insert and clear buttons are working and the numbers are being updated.

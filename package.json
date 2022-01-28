@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "server": "node server/index.js",
-    "client": "cd client && npm run start",
+    "server": "nodemon node server/index.js",
+    "client": "cd client && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,11 @@
   },
   "homepage": "https://github.com/magnetenstad/react-express-node-mysql#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^4.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
