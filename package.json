@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "server": "node server/index.js",
+    "client": "cd client && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/magnetenstad/react-express-node-mysql/issues"
   },
-  "homepage": "https://github.com/magnetenstad/react-express-node-mysql#readme"
+  "homepage": "https://github.com/magnetenstad/react-express-node-mysql#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
 }
