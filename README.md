@@ -77,7 +77,7 @@ class Database {
 ```
 3. Create an empty file `data/database.db` and add `data/` to `.gitignore`
 4.  Replace the contents of `server/index.js` with the following:
-```diff
+```js
 import express from 'express';
 import { Database } from './db.js';
 
