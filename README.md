@@ -28,7 +28,7 @@ app.listen(PORT, () => {
 });
 ```
 6. Add `"server": "node server/index.js"` to `scripts` in `package.json`
-7. Start the server `npm start`
+7. Start the server `npm run server`
    - `ctrl+C` in terminal to stop the server
 
 ### Create a React frontend
