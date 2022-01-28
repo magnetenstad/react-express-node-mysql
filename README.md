@@ -1,5 +1,5 @@
 
-# Template for a React - Express - Node - MySQL stack
+# Template for a React - Express - Node - SQLite stack
 
 ## Steps to reproduce
 1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed.
