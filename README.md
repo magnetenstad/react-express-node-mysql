@@ -5,17 +5,17 @@
 1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed.
 
 ### Create a backend Node server with Express
-1. Initialize git project, e.g. with `git init` or from GitHub/GitLab
-2. Initialize Node `npm init -y`
+2. Initialize git project, e.g. with `git init` or from GitHub/GitLab
+3. Initialize Node `npm init -y`
    - ( `-y` is to skip setting properties manually )
-3. Create the following file:
+4. Create the following file:
    - (to avoid adding dependency node modules to the git repo)
 ```js
 // .gitignore
 node_modules/
 ```
-1. Install Express `npm i express` and nodemon `npm i nodemon --save-dev`
-2. Create the following file:
+5. Install Express `npm i express` and nodemon `npm i nodemon --save-dev`
+6. Create the following file:
 ```js
 // server/index.js
 import express from 'express';
@@ -28,14 +28,14 @@ app.listen(PORT, () => {
 });
 
 ```
-6. Add `"type": "module"` to `package.json`
-7. Add `"server": "nodemon node server/index.js"` to `scripts` in `package.json`
-8. Start the server `npm run server`, if you see the message `Server listening on 3001`, you have successfully setup a server!
+7. Add `"type": "module"` to `package.json`
+8. Add `"server": "nodemon node server/index.js"` to `scripts` in `package.json`
+9. Start the server `npm run server`, if you see the message `Server listening on 3001`, you have successfully setup a server!
    - `ctrl+C` in terminal to stop the server
 
 ### Create an SQLite database
-1. Install SQLite and SQLite3 `npm i sqlite sqlite3`
-2. Create the following file:
+10. Install SQLite and SQLite3 `npm i sqlite sqlite3`
+11. Create the following file:
 ```js
 // server/db.js
 import sqlite3 from 'sqlite3';
@@ -75,8 +75,8 @@ class Database {
   }
 }
 ```
-3. Create an empty file `data/database.db` and add `data/` to `.gitignore`
-4.  Replace the contents of `server/index.js` with the following:
+12. Create an empty file `data/database.db` and add `data/` to `.gitignore`
+13.  Replace the contents of `server/index.js` with the following:
 ```js
 import express from 'express';
 import { Database } from './db.js';
@@ -106,16 +106,16 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 ```
-5. Start the server with `npm run server`
-6. Open a browser and visit `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear`. If they all show relevant messages, your database is working!
+14. Start the server with `npm run server`
+15. Open a browser and visit `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear`. If they all show relevant messages, your database is working!
 
 ### Create a React frontend
-1. Initialize React `npx create-react-app client`
+16. Initialize React `npx create-react-app client`
    - `client` will be the name of the created folder and React project
-2. Add `"proxy": "http://localhost:3001"` to `client/package.json`
+17. Add `"proxy": "http://localhost:3001"` to `client/package.json`
    - To communicate with the server, running on port `3001`
-3. Add `"client": "cd client && npm start"` to `scripts` in `package.json` (in the root folder, not in `client/`!)
-4. Replace the contents of `client/src/App.js` with the following:
+18. Add `"client": "cd client && npm start"` to `scripts` in `package.json` (in the root folder, not in `client/`!)
+19. Replace the contents of `client/src/App.js` with the following:
 ```js
 import logo from './logo.svg';
 import './App.css';
@@ -184,6 +184,6 @@ function NumbersComponent() {
 
 export default App;
 ```
-1. Start the server `npm run server`
-2. Open **another terminal** and start the client `npm run client`
-3. Open `localhost:3000` in a browser. If insert and clear buttons are displayed, and numbers are updating when buttons are pressed, you have successfully created a webapp with the React - Express - Node - SQLite stack!
+20. Start the server `npm run server`
+21. Open **another terminal** and start the client `npm run client`
+22. Open `localhost:3000` in a browser. If insert and clear buttons are displayed, and numbers are updating when buttons are pressed, you have successfully created a webapp with the React - Express - Node - SQLite stack!
