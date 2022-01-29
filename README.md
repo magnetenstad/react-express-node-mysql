@@ -30,7 +30,7 @@ app.listen(PORT, () => {
 ```
 6. Add `"type": "module"` to `package.json`
 7. Add `"server": "nodemon node server/index.js"` to `scripts` in `package.json`
-8. Start the server `npm run server`
+8. Start the server `npm run server`, if you see the message `Server listening on 3001`, you have successfully setup a server!
    - `ctrl+C` in terminal to stop the server
 
 ### Create an SQLite database
@@ -106,7 +106,8 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 ```
-5. Start the server with `npm run server` and make sure `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear` are working.
+5. Start the server with `npm run server`
+6. Open a browser and visit `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear`. If they all show relevant messages, your database is working!
 
 ### Create a React frontend
 1. Initialize React `npx create-react-app client`
@@ -185,4 +186,4 @@ export default App;
 ```
 1. Start the server `npm run server`
 2. Open **another terminal** and start the client `npm run client`
-3. Open `localhost:3000` and make sure that the insert and clear buttons are working and the numbers are being updated.
+3. Open `localhost:3000` in a browser. If insert and clear buttons are displayed, and numbers are updating when buttons are pressed, you have successfully created a webapp with the React - Express - Node - SQLite stack!
