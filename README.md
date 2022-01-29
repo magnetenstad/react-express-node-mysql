@@ -107,7 +107,11 @@ app.listen(PORT, () => {
 });
 ```
 14. Start the server with `npm run server`
-15. Open a browser and visit `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear`. If they all show relevant messages, your database is working!
+15. Open a browser and visit `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear`. Visiting the urls should triggers the following functions:
+    - `../get` shows the database content (will be empty at first)
+    - `../insert` inserts a random number (0-100) into the database
+    - `../clear` deletes all numbers in the database
+If they all show relevant messages, your database is working! 
 
 ### Create a React frontend
 16. Initialize React `npx create-react-app client`
