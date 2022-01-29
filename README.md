@@ -114,7 +114,7 @@ app.listen(PORT, () => {
    - `client` will be the name of the created folder and React project
 2. Add `"proxy": "http://localhost:3001"` to `client/package.json`
    - To communicate with the server, running on port `3001`
-3. Add `"client": "cd client && npm start"` to `scripts` in `package.json`
+3. Add `"client": "cd client && npm start"` to `scripts` in `package.json` (in the root folder, not in `client/`!)
 4. Replace the contents of `client/src/App.js` with the following:
 ```js
 import logo from './logo.svg';
