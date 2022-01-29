@@ -19,6 +19,7 @@ function NumbersComponent() {
   const [numbers, setNumbers] = useState([]);
   
   const getNumbers = async () => {
+    setIsLoaded(false);
     fetch('/api/get')
       .then(res => res.json())
       .then(
@@ -30,7 +31,7 @@ function NumbersComponent() {
           setIsLoaded(true);
           setError(error);
         }
-      )
+      );
   }
   const insertNumber = () => {
     fetch('/api/insert').then(() => getNumbers())
