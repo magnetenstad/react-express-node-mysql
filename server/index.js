@@ -11,13 +11,13 @@ app.get('/api/get', async (request, result) => {
   result.send(JSON.stringify(await db.getNumbers()));
 })
 
-app.get('/api/insert', (request, result) => {
+app.put('/api/insert', (request, result) => {
   let number = Math.floor(Math.random() * 100)
   db.insertNumber(number);
   result.send(JSON.stringify({"message": "Inserted " + number}));
 })
 
-app.get('/api/clear', (request, result) => {
+app.delete('/api/clear', (request, result) => {
   db.clearNumbers();
   result.send(JSON.stringify({"message": "Cleared numbers!"}));
 })

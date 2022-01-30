@@ -17,10 +17,10 @@ function NumbersComponent() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [numbers, setNumbers] = useState([]);
-  
+
   const getNumbers = async () => {
     setIsLoaded(false);
-    fetch('/api/get')
+    fetch('/api/get', {method: 'GET'})
       .then(res => res.json())
       .then(
         (result) => {
@@ -34,25 +34,28 @@ function NumbersComponent() {
       );
   }
   const insertNumber = () => {
-    fetch('/api/insert').then(() => getNumbers())
+    fetch('/api/insert', {method: 'PUT'})
+      .then(() => getNumbers())
   }
   const clearNumbers = () => {
-    fetch('/api/clear').then(() => getNumbers())
+    fetch('/api/clear', {method: 'DELETE'})
+      .then(() => getNumbers())
   }
 
   useEffect(() => getNumbers(), [])
 
+  let liKey = 0;
   if (error) {
-    return <div>Error: {error.message} {numbers}</div>;
+    return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
     return (
-      <div>
+      <div>    
       <ul>
         <p>Numbers:</p>
         {numbers.map(number => (
-          <li>
+          <li key={liKey++}>
             {number.number}
           </li>
         ))}
