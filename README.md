@@ -119,7 +119,15 @@ If they all show relevant messages, your database is working!
 17. Add `"proxy": "http://localhost:3001"` to `client/package.json`
    - To communicate with the server, running on port `3001`
 18. Add `"client": "cd client && npm start"` to `scripts` in `package.json` (in the root folder, not in `client/`!)
-19. Replace the contents of `client/src/App.js` with the following:
+19. Create the following file:
+    - To prevent changes to the client and readme to hot reload the server.
+```json
+// nodemon.json
+{   
+  "ignore": ["client/**", "README.md"] 
+}
+```
+20. Replace the contents of `client/src/App.js` with the following:
 ```js
 import logo from './logo.svg';
 import './App.css';
