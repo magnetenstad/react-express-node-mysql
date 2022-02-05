@@ -2,7 +2,7 @@
 # Demo for a webapp with the React - Express - Node - SQLite stack
 
 ## Steps to reproduce (~ 20 min)
-1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed.
+1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed
 
 ### Create a backend Node server with Express
 2. Initialize git project, e.g. with `git init` or from GitHub/GitLab
@@ -30,7 +30,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 ```
-7. Make the following edits to `server/package.json`:
+7. Make the following edits to `server/package.json`
 ```diff
 {
   "name": "server",
@@ -44,121 +44,87 @@ app.listen(PORT, () => {
   ...
 }
 ```
-8. Start the server with `npm start`, if you see the message `Server listening on 3001`, you have successfully setup a Node server!
+8. Start the server with `npm start` and you should see `Server listening on 3001`
    - `ctrl+C+C` in the terminal to terminate the server
 
 ### Create an SQLite database
-10. Install SQLite and SQLite3 `npm i sqlite sqlite3`
-11. Create the following file:
+9.  Make sure you are still in the `server` directory, install `better-sqlite3` and create a `data` folder
+```shell
+npm i better-sqlite3 && mkdir data
+```
+10. Create the following file
 ```js
 // server/src/db.js
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import Database from 'better-sqlite3';
 
-export { Database };
-
-class Database {
-  db;
-  
-  async init() {
-    this.db = await open({
-      filename: './data/database.db',
-      driver: sqlite3.Database
-    });
-    await this.initNumbers();
+export class NumbersDB {
+  constructor(filename) {
+    this.db = new Database(filename,
+      { verbose: (msg) => console.log('[DB] ' + msg) });
+    this.stmt_create = this.db.prepare(
+      'CREATE TABLE IF NOT EXISTS numbers (number int)');
+    this.stmt_create.run();
+    
+    this.stmt_get = this.db.prepare(
+      'SELECT * FROM numbers');
+    this.stmt_insert = this.db.prepare(
+      'INSERT INTO numbers (number) VALUES (?)');
+    this.stmt_clear = this.db.prepare(
+      'DELETE FROM numbers');
   }
   
-  async initNumbers() {
-    console.log("[DB] Init");
-    await this.db.exec('CREATE TABLE IF NOT EXISTS numbers (number int)');
+  getNumbers() {
+    return this.stmt_get.all();
   }
   
-  async getNumbers() {
-    console.log("[DB] GET");
-    return await this.db.all('SELECT * FROM numbers');
-  }
-  
-  async insertNumber(number) {
-    console.log("[DB] INSERT " + number);
-    await this.db.exec('INSERT INTO numbers (number) VALUES (' + number + ')');
+  insertNumber(number) {
+    this.stmt_insert.run(number);
   }
 
-  async clearNumbers() {
-    console.log("[DB] CLEAR");
-    await this.db.exec('DELETE FROM numbers');
+  clearNumbers() {
+    this.stmt_clear.run();
   }
 }
 ```
-12. Create an empty file `server/data/database.db` and add `data/` to `.gitignore`
-13.  Replace the contents of `server/index.js` with the following:
+11. Replace the contents of `server/src/index.js` with the following
 ```js
+// server/src/index.js
 import express from 'express';
-import { Database } from './db.js';
+import { NumbersDB } from './db.js';
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 const server = express();
-const db = new Database();
+const db = new NumbersDB('./data/database.db');
 
-await db.init();
-
-server.get('/api/get', async (request, result) => {
-  result.send(JSON.stringify(await db.getNumbers()));
+server.get('/api/get', (request, result) => {
+  result.send(JSON.stringify(db.getNumbers()));
 })
 
 server.put('/api/insert', (request, result) => {
   let number = Math.floor(Math.random() * 100)
   db.insertNumber(number);
-  result.send(JSON.stringify({"message": "Inserted " + number}));
 })
 
 server.delete('/api/clear', (request, result) => {
   db.clearNumbers();
-  result.send(JSON.stringify({"message": "Cleared numbers!"}));
 })
 
 server.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 ```
-14. Start the server with `npm run server`
-15. Open a browser and visit `localhost:3001/api/get`, `localhost:3001/api/insert` and `localhost:3001/api/clear`. Visiting the urls should trigger the following functions:
-    - `../get` shows the database content (will be empty at first)
-    - `../insert` inserts a random number (0-100) into the database
-    - `../clear` deletes all numbers in the database
-If they all show relevant messages, your database is working! 
 
 ### Create a React frontend
-16. Initialize React `npx create-react-app client`
-   - `client` will be the name of the created folder and React project
-17. Add `"proxy": "http://localhost:3001"` to `client/package.json`
-   - To communicate with the server, running on port `3001`
-18. Add `"client": "cd client && npm start"` to `scripts` in `package.json` (in the root folder, not in `client/`!)
-19. Create the following file:
-    - To prevent changes to the client and readme to hot reload the server.
-```json
-// nodemon.json
-{   
-  "ignore": ["client/**", "README.md"] 
-}
+12. Return to the root directory and initialize React
+```shell
+cd .. && npx create-react-app client && cd client
 ```
-20. Replace the contents of `client/src/App.js` with the following:
-```js
-import logo from './logo.svg';
-import './App.css';
-import { useEffect, useState } from "react";
+13. Create the following file
+```jsx
+// client/src/components/Numbers.jsx
+import { useEffect, useState } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {NumbersComponent()}
-      </header>
-    </div>
-  );
-}
-
-function NumbersComponent() {
+export default function Numbers() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [numbers, setNumbers] = useState([]);
@@ -197,23 +163,63 @@ function NumbersComponent() {
   } else {
     return (
       <div>    
-      <ul>
-        <p>Numbers:</p>
-        {numbers.map(number => (
-          <li key={liKey++}>
-            {number.number}
-          </li>
-        ))}
-      </ul>
-      <button onClick={insertNumber}>Insert number</button>
-      <button onClick={clearNumbers}>Clear numbers</button>
+        <ul>
+          <p>Numbers:</p>
+          {numbers.map(number => (
+            <li key={liKey++}>
+              {number.number}
+            </li>
+          ))}
+        </ul>
+        <button onClick={insertNumber}>Insert number</button>
+        <button onClick={clearNumbers}>Clear numbers</button>
       </div>
     );
   }
 }
-
-export default App;
 ```
-20. Start the server `npm run server`
-21. Open **another terminal** and start the client `npm run client`
-22. Open `localhost:3000` in a browser. If insert and clear buttons are displayed, and numbers are updating when buttons are pressed, you have successfully created a webapp with the React - Express - Node - SQLite stack!
+14. Replace the contents of `client/src/App.js` with the following
+```js
+// client/src/App.js
+import logo from './logo.svg';
+import './App.css';
+import { Numbers } from './components/Numbers';
+
+export default function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {Numbers()}
+      </header>
+    </div>
+  );
+}
+```
+15. Add `"proxy": "http://localhost:3001"` to `client/package.json`
+16. Start the client
+```shell
+npm start
+```
+  - To communicate with the server, it needs to be running in a separate terminal window
+
+### Starting the backend and frontend with a single command
+17. Return to the root directory, initialize Node and install `concurrently`
+```shell
+cd .. && npm init -y && npm i concurrently --save-dev
+```
+18. Make the following edits to `package.json`
+```diff
+...
+"scripts": {
++ "install": "cd server && npm i && cd ../client && npm i",
++ "server": "cd server && npm run start",
++ "client": "cd client && npm run start",
++ "start": "concurrently \"npm run server\" \"npm run client\""
+},
+...
+```
+19. Start the server and client
+```shell
+npm start
+```

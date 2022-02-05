@@ -1,7 +1,7 @@
 {
   "name": "react-express-node-mysql",
   "version": "1.0.0",
-  "description": "1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed.",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "install": "cd server && npm i && cd ../client && npm i",
@@ -20,7 +20,7 @@
     "url": "https://github.com/magnetenstad/react-express-node-sqlite/issues"
   },
   "homepage": "https://github.com/magnetenstad/react-express-node-sqlite#readme",
-  "dependencies": {
+  "devDependencies": {
     "concurrently": "^7.0.0"
   }
 }

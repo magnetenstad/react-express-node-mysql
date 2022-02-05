@@ -1,36 +1,30 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import Database from 'better-sqlite3';
 
-export { Database };
-
-class Database {
-  db;
-  
-  async init() {
-    this.db = await open({
-      filename: './data/database.db',
-      driver: sqlite3.Database
-    });
-    await this.initNumbers();
+export class NumbersDB {
+  constructor(filename) {
+    this.db = new Database(filename,
+      { verbose: (msg) => console.log('[DB] ' + msg) });
+    this.stmt_create = this.db.prepare(
+      'CREATE TABLE IF NOT EXISTS numbers (number int)');
+    this.stmt_create.run();
+    
+    this.stmt_get = this.db.prepare(
+      'SELECT * FROM numbers');
+    this.stmt_insert = this.db.prepare(
+      'INSERT INTO numbers (number) VALUES (?)');
+    this.stmt_clear = this.db.prepare(
+      'DELETE FROM numbers');
   }
   
-  async initNumbers() {
-    console.log("[DB] Init");
-    await this.db.exec('CREATE TABLE IF NOT EXISTS numbers (number int)');
+  getNumbers() {
+    return this.stmt_get.all();
   }
   
-  async getNumbers() {
-    console.log("[DB] GET");
-    return await this.db.all('SELECT * FROM numbers');
-  }
-  
-  async insertNumber(number) {
-    console.log("[DB] INSERT " + number);
-    await this.db.exec('INSERT INTO numbers (number) VALUES (' + number + ')');
+  insertNumber(number) {
+    this.stmt_insert.run(number);
   }
 
-  async clearNumbers() {
-    console.log("[DB] CLEAR");
-    await this.db.exec('DELETE FROM numbers');
+  clearNumbers() {
+    this.stmt_clear.run();
   }
 }
