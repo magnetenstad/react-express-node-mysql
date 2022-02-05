@@ -20,7 +20,7 @@ node_modules/
 // server/index.js
 import express from 'express';
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 const app = express();
 
 app.listen(PORT, () => {

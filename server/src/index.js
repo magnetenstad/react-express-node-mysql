@@ -1,7 +1,7 @@
 import express from 'express';
 import { Database } from './db.js';
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 const server = express();
 const db = new Database();
 

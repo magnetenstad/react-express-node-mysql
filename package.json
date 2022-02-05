@@ -1,31 +1,26 @@
 {
   "name": "react-express-node-mysql",
   "version": "1.0.0",
-  "description": "",
+  "description": "1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed.",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "server": "nodemon node server/index.js",
-    "client": "cd client && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install": "cd server && npm i && cd ../client && npm i",
+    "server": "cd server && npm run start",
+    "client": "cd client && npm run start",
+    "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/magnetenstad/react-express-node-mysql.git"
+    "url": "git+https://github.com/magnetenstad/react-express-node-sqlite.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/magnetenstad/react-express-node-mysql/issues"
+    "url": "https://github.com/magnetenstad/react-express-node-sqlite/issues"
   },
-  "homepage": "https://github.com/magnetenstad/react-express-node-mysql#readme",
+  "homepage": "https://github.com/magnetenstad/react-express-node-sqlite#readme",
   "dependencies": {
-    "express": "^4.17.2",
-    "sqlite": "^4.0.23",
-    "sqlite3": "^4.2.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
+    "concurrently": "^7.0.0"
   }
 }
