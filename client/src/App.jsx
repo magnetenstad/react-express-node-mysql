@@ -7,6 +7,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+        <h1>Hello world!</h1>
         <Numbers/>
       </header>
     </div>

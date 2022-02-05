@@ -180,9 +180,9 @@ export function Numbers() {
   }
 }
 ```
-14. Replace the contents of `client/src/App.js` with the following
+14. Delete `client/src/App.js` and create the following file
 ```js
-// client/src/App.js
+// client/src/App.jsx
 import logo from './logo.svg';
 import './App.css';
 import { Numbers } from './components/Numbers';
@@ -192,6 +192,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+        <h1>Hello world!</h1>
         <Numbers/>
       </header>
     </div>
@@ -225,3 +226,33 @@ cd .. && npm init -y && npm i concurrently --save-dev
 ```shell
 npm start
 ```
+
+### Tests
+20. Make the following edit to `package.json`
+```diff
+"scripts": {
+  "install": "cd server && npm i && cd ../client && npm i",
+  "server": "cd server && npm run start",
+  "client": "cd client && npm run start",
+  "start": "concurrently \"npm run server\" \"npm run client\"",
++ "test": "cd client && npm test"
+},
+```
+21. Run the test
+```shell
+npm test
+```
+1.  The tests fail, since we have made changes to the app. Replace the test
+```js
+// client/src/App.test.js
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders hello world', () => {
+  render(<App />);
+  const helloWorld = screen.getByText(/hello world/i);
+  expect(helloWorld).toBeInTheDocument();
+});
+```
+23. The tests will automatically rerun on file changes. Hit `ctrl+C` to exit testing.
+
