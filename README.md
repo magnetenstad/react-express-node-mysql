@@ -6,18 +6,21 @@
 
 ### Create a backend Node server with Express
 2. Initialize git project, e.g. with `git init` or from GitHub/GitLab
-3. Initialize Node `npm init -y`
-   - ( `-y` is to skip setting properties manually )
-4. Create the following file:
-   - (to avoid adding dependency node modules to the git repo)
-```js
-// .gitignore
-node_modules/
+3. Create a gitignore to ignore node modules and database data
+```shell
+echo **/node_modules/`nserver/data/ > .gitignore
 ```
-5. Install Express `npm i express` and nodemon `npm i nodemon --save-dev`
+4. Create a server directory and initialize Node
+```shell
+mkdir server && cd server && npm init -y
+```
+5. Install Express and nodemon
+```shell
+npm i express && npm i nodemon --save-dev
+```
 6. Create the following file:
 ```js
-// server/index.js
+// server/src/index.js    <-- This indicates the filename
 import express from 'express';
 
 const PORT = 3001;
@@ -26,18 +29,29 @@ const app = express();
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
-
 ```
-7. Add `"type": "module"` to `package.json`
-8. Add `"server": "nodemon node server/index.js"` to `scripts` in `package.json`
-9. Start the server `npm run server`, if you see the message `Server listening on 3001`, you have successfully setup a server!
-   - `ctrl+C` in terminal to stop the server
+7. Make the following edits to `server/package.json`:
+```diff
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
++ "main": "src/index.js",
++ "type": "module",
+  "scripts": {
++   "start": "nodemon node"
+  },
+  ...
+}
+```
+8. Start the server with `npm start`, if you see the message `Server listening on 3001`, you have successfully setup a Node server!
+   - `ctrl+C+C` in the terminal to terminate the server
 
 ### Create an SQLite database
 10. Install SQLite and SQLite3 `npm i sqlite sqlite3`
 11. Create the following file:
 ```js
-// server/db.js
+// server/src/db.js
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 
@@ -75,7 +89,7 @@ class Database {
   }
 }
 ```
-12. Create an empty file `data/database.db` and add `data/` to `.gitignore`
+12. Create an empty file `server/data/database.db` and add `data/` to `.gitignore`
 13.  Replace the contents of `server/index.js` with the following:
 ```js
 import express from 'express';
