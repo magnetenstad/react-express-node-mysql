@@ -103,10 +103,12 @@ server.get('/api/get', (request, result) => {
 server.put('/api/insert', (request, result) => {
   let number = Math.floor(Math.random() * 100)
   db.insertNumber(number);
+  result.send();
 })
 
 server.delete('/api/clear', (request, result) => {
   db.clearNumbers();
+  result.send();
 })
 
 server.listen(PORT, () => {
@@ -124,12 +126,12 @@ cd .. && npx create-react-app client && cd client
 // client/src/components/Numbers.jsx
 import { useEffect, useState } from 'react';
 
-export default function Numbers() {
+export function Numbers() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [numbers, setNumbers] = useState([]);
 
-  const getNumbers = async () => {
+  const getNumbers = () => {
     setIsLoaded(false);
     fetch('/api/get', {method: 'GET'})
       .then(res => res.json())
@@ -190,7 +192,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        {Numbers()}
+        <Numbers/>
       </header>
     </div>
   );

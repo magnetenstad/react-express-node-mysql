@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export default function Numbers() {
+export function Numbers() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [numbers, setNumbers] = useState([]);
 
-  const getNumbers = async () => {
+  const getNumbers = () => {
     setIsLoaded(false);
     fetch('/api/get', {method: 'GET'})
       .then(res => res.json())
