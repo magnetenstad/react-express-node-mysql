@@ -38,9 +38,9 @@ export function Numbers() {
     return <h2>Loading...</h2>;
   } else {
     return (
-      <div>    
+      <div>
+        <h2>Numbers:</h2>
         <ul>
-          <h2>Numbers:</h2>
           {numbers.map(number => (
             <li key={liKey++}>
               {number.number}

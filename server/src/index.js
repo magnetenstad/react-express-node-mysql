@@ -10,7 +10,7 @@ server.get('/api/get', (request, result) => {
 })
 
 server.put('/api/insert', (request, result) => {
-  let number = Math.floor(Math.random() * 100)
+  let number = Math.floor(Math.random() * 100);
   db.insertNumber(number);
   result.send();
 })

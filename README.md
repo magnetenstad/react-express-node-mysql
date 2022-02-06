@@ -101,7 +101,7 @@ server.get('/api/get', (request, result) => {
 })
 
 server.put('/api/insert', (request, result) => {
-  let number = Math.floor(Math.random() * 100)
+  let number = Math.floor(Math.random() * 100);
   db.insertNumber(number);
   result.send();
 })
@@ -164,9 +164,9 @@ export function Numbers() {
     return <h2>Loading...</h2>;
   } else {
     return (
-      <div>    
+      <div>
+        <h2>Numbers:</h2>
         <ul>
-          <h2>Numbers:</h2>
           {numbers.map(number => (
             <li key={liKey++}>
               {number.number}
@@ -223,7 +223,7 @@ npm start
 ```shell
 npm test
 ```
-1.  The tests fail, since we have made changes to the app. Replace the test
+22.  The tests fail, since we have made changes to the app. Replace the test
 ```js
 // client/src/App.test.js
 import { render, screen } from '@testing-library/react';
@@ -235,14 +235,75 @@ test('renders hello world', () => {
   expect(helloWorld).toBeInTheDocument();
 });
 ```
-23. The tests will automatically rerun on file changes. Hit `ctrl+C` to exit testing.
+23. Create the following file
+```js
+// client/src/components/Numbers.test.js
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import { Numbers } from './Numbers';
+
+it('renders numbers', async () => {
+  // Mock the api
+  let mockDB = [
+    {'number': 0},
+    {'number': 99}
+  ];
+  jest.spyOn(global, 'fetch').mockImplementation((url) => {
+    switch(url) {
+      case '/api/get':
+        return Promise.resolve({
+          json: () => Promise.resolve(mockDB)
+        });
+      case '/api/clear':
+        mockDB = [];
+        return Promise.resolve();
+      case '/api/insert':
+        let number = Math.floor(Math.random() * 100);
+        mockDB.push(number);
+        return Promise.resolve();
+      default:
+    }
+  });
+
+  // Use the asynchronous version of act to apply resolved promises
+  await act(async () => {
+    render(<Numbers />);
+  });
+  
+  const listItems = screen.getAllByRole('listitem');
+  expect(listItems).toHaveLength(2);
+  expect(listItems[0].textContent).toBe('0');
+  expect(listItems[1].textContent).toBe('99');
+  expect(fetch).toHaveBeenCalledTimes(1);
+
+  // A good read: https://testing-library.com/docs/queries/about/
+  const clearButton = screen.getByText(/clear/i);
+  await act(async () => {
+    clearButton.click();
+  });
+  expect(fetch).toHaveBeenCalledTimes(3);
+  expect(screen.queryAllByRole('listitem')).toHaveLength(0);
+
+  const insertButton = screen.getByText(/insert/i);
+  await act(async () => {
+    insertButton.click();
+  });
+  expect(fetch).toHaveBeenCalledTimes(5);
+  expect(screen.queryAllByRole('listitem')).toHaveLength(1);
+
+  // remove the mock to ensure tests are completely isolated
+  global.fetch.mockRestore();
+});
+```
+24. The tests will automatically rerun on file changes. Hit `ctrl+C` to exit testing.
 
 ### Set up end to end tests with Cypress
-24. Install `cypress` in the client directory
+25. Install `cypress` in the client directory
 ```shell
 cd client && npm i cypress @testing-library/cypress --save-dev
 ```
-25. Make the following edit to `client/package.json`
+26. Make the following edit to `client/package.json`
 ```diff
 "scripts": {
   "start": "react-scripts start",
@@ -252,31 +313,31 @@ cd client && npm i cypress @testing-library/cypress --save-dev
 + "cypress": "cypress open"
 },
 ```
-26. Open cypress
+27. Open cypress
 ```shell
 npm run cypress
 ```
-27. Make the following edit to `client/cypress.json`
+28. Make the following edit to `client/cypress.json`
 ```diff
 {
 +  "baseUrl": "http://localhost:3000",
 +  "videos": false
 }
 ```
-28. Make the following edit to `client/.gitignore`
+29. Make the following edit to `client/.gitignore`
 ```diff
 ...
 +# Cypress
 +cypress/screenshots/
 +cypress/videos/
 ```
-29. Make the following edit to `client/cypress/support/commands.js`
+30. Make the following edit to `client/cypress/support/commands.js`
 ```diff
 ...
 +import "@testing-library/cypress/add-commands";
 ```
-30. Remove the contents of `client/cypress/integration` and `client/cypress/fixtures`
-31. Create the following file
+31. Remove the contents of `client/cypress/integration` and `client/cypress/fixtures`
+32. Create the following file
 ```js
 // client/cypress/integration/numbers.test.js
 it('should start by loading', () => {
@@ -301,7 +362,7 @@ it('should clear and insert numbers', () => {
   cy.get('ul').find('li').should('have.length', 1);
 });
 ```
-32. Make the following edit to `package.json`
+33. Make the following edit to `package.json`
 ```diff
 "scripts": {
   "install": "cd server && npm i && cd ../client && npm i",
@@ -312,7 +373,7 @@ it('should clear and insert numbers', () => {
 + "cypress": "concurrently \"npm run server\" \"npm run client\" \"cd client && npm run cypress\""
 },
 ```
-33. Run cypress from the root directory
+34. Run cypress from the root directory
 ```shell
 cd .. && npm run cypress
 ```
