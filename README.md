@@ -1,7 +1,7 @@
 
 # Demo for a webapp with the React - Express - Node - SQLite stack
 
-## Steps to reproduce (~ 20 min)
+## Steps to reproduce (~ 30 min)
 1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed
 
 ### Create a backend Node server with Express
@@ -159,14 +159,14 @@ export function Numbers() {
 
   let liKey = 0;
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <h2>Error: {error.message}</h2>;
   } else if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <h2>Loading...</h2>;
   } else {
     return (
       <div>    
         <ul>
-          <p>Numbers:</p>
+          <h2>Numbers:</h2>
           {numbers.map(number => (
             <li key={liKey++}>
               {number.number}
@@ -180,25 +180,6 @@ export function Numbers() {
   }
 }
 ```
-14. Delete `client/src/App.js` and create the following file
-```js
-// client/src/App.jsx
-import logo from './logo.svg';
-import './App.css';
-import { Numbers } from './components/Numbers';
-
-export default function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Hello world!</h1>
-        <Numbers/>
-      </header>
-    </div>
-  );
-}
-```
 15. Add `"proxy": "http://localhost:3001"` to `client/package.json`
 16. Start the client
 ```shell
@@ -206,7 +187,7 @@ npm start
 ```
   - To communicate with the server, it needs to be running in a separate terminal window
 
-### Starting the backend and frontend with a single command
+### Start the backend and frontend with a single command
 17. Return to the root directory, initialize Node and install `concurrently`
 ```shell
 cd .. && npm init -y && npm i concurrently --save-dev
@@ -227,7 +208,7 @@ cd .. && npm init -y && npm i concurrently --save-dev
 npm start
 ```
 
-### Tests
+### Set up unit tests with Jest
 20. Make the following edit to `package.json`
 ```diff
 "scripts": {
@@ -256,3 +237,84 @@ test('renders hello world', () => {
 ```
 23. The tests will automatically rerun on file changes. Hit `ctrl+C` to exit testing.
 
+### Set up end to end tests with Cypress
+24. Install `cypress` in the client directory
+```shell
+cd client && npm i cypress @testing-library/cypress --save-dev
+```
+25. Make the following edit to `client/package.json`
+```diff
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject",
++ "cypress": "cypress open"
+},
+```
+26. Open cypress
+```shell
+npm run cypress
+```
+27. Make the following edit to `client/cypress.json`
+```diff
+{
++  "baseUrl": "http://localhost:3000",
++  "videos": false
+}
+```
+28. Make the following edit to `client/.gitignore`
+```diff
+...
++# Cypress
++cypress/screenshots/
++cypress/videos/
+```
+29. Make the following edit to `client/cypress/support/commands.js`
+```diff
+...
++import "@testing-library/cypress/add-commands";
+```
+30. Remove the contents of `client/cypress/integration` and `client/cypress/fixtures`
+31. Create the following file
+```js
+// client/cypress/integration/numbers.test.js
+it('should start by loading', () => {
+  cy.visit('/');
+  cy.get('h2').contains('Loading...');
+});
+
+it('should show header and buttons', () => {
+  cy.visit('/');
+  cy.wait(100);
+  cy.get('h2').contains('Numbers:');
+  cy.get('button').contains(/insert/i).should('exist');
+  cy.get('button').contains(/clear/i).should('exist');
+});
+
+it('should clear and insert numbers', () => {
+  cy.visit('/');
+  cy.wait(100);
+  cy.get('button').contains(/clear/i).click();
+  cy.get('ul').find('li').should('have.length', 0);
+  cy.get('button').contains(/insert/i).click();
+  cy.get('ul').find('li').should('have.length', 1);
+});
+```
+32. Make the following edit to `package.json`
+```diff
+"scripts": {
+  "install": "cd server && npm i && cd ../client && npm i",
+  "server": "cd server && npm run start",
+  "client": "cd client && npm run start",
+  "start": "concurrently \"npm run server\" \"npm run client\"",
+  "test": "cd client && npm test",
++ "cypress": "concurrently \"npm run server\" \"npm run client\" \"cd client && npm run cypress\""
+},
+```
+33. Run cypress from the root directory
+```shell
+cd .. && npm run cypress
+```
+
+TODO: Configure ESLint, https://gist.github.com/textbook/3377dda14efe4449772c2377188c3fa8

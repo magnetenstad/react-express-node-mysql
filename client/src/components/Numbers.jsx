@@ -33,14 +33,14 @@ export function Numbers() {
 
   let liKey = 0;
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <h2>Error: {error.message}</h2>;
   } else if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <h2>Loading...</h2>;
   } else {
     return (
       <div>    
         <ul>
-          <p>Numbers:</p>
+          <h2>Numbers:</h2>
           {numbers.map(number => (
             <li key={liKey++}>
               {number.number}
