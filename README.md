@@ -467,3 +467,7 @@ cd client; npm i eslint --save-dev; npm i eslint-plugin-cypress --save-dev; npm 
 + "lint:fix": "concurrently \"cd server && npm run lint:fix\" \"cd client && npm run lint:fix\""
 },
 ```
+41. Create a .env file
+```shell
+echo DISABLE_ESLINT_PLUGIN=true`nESLINT_NO_DEV_ERRORS=true > client/.env
+```
