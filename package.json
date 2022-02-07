@@ -10,7 +10,9 @@
     "client": "cd client && npm run start",
     "client:test": "cd client && npm test",
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "cypress": "concurrently \"npm run server:test\" \"npm run client\" \"cd client && npm run cypress\""
+    "cypress": "concurrently \"npm run server:test\" \"npm run client\" \"cd client && npm run cypress\"",
+    "lint": "concurrently \"cd server && npm run lint\" \"cd client && npm run lint\"",
+    "lint:fix": "concurrently \"cd server && npm run lint:fix\" \"cd client && npm run lint:fix\""
   },
   "repository": {
     "type": "git",
@@ -25,8 +27,5 @@
   "homepage": "https://github.com/magnetenstad/react-express-node-sqlite#readme",
   "devDependencies": {
     "concurrently": "^7.0.0"
-  },
-  "dependencies": {
-    "eslint-plugin-cypress": "^2.12.1"
   }
 }

@@ -2,6 +2,8 @@
 # Demo for a webapp with the React - Express - Node - SQLite stack
 
 ## Steps to reproduce (~ 30 min)
+Note: this tutorial is written for the PowerShell terminal.
+
 1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed
 
 ### Create a backend Node server with Express
@@ -12,11 +14,11 @@ echo **/node_modules/`nserver/data/ > .gitignore
 ```
 4. Create a server directory and initialize Node
 ```shell
-mkdir server && cd server && npm init -y
+mkdir server; cd server; npm init -y
 ```
 5. Install Express and nodemon
 ```shell
-npm i express && npm i nodemon --save-dev
+npm i express; npm i nodemon --save-dev
 ```
 6. Create the following file:
 ```js
@@ -51,7 +53,7 @@ app.listen(PORT, () => {
 ### Create an SQLite database
 9.  Make sure you are still in the `server` directory, install `better-sqlite3` and create a `data` folder
 ```shell
-npm i better-sqlite3 && mkdir data
+npm i better-sqlite3; mkdir data
 ```
 10. Create the following file
 ```js
@@ -121,7 +123,7 @@ server.listen(PORT, () => {
 ### Create a React frontend
 12. Return to the root directory and initialize React
 ```shell
-cd .. && npx create-react-app client && cd client
+cd ..; npx create-react-app client; cd client
 ```
 13. Create the following file
 ```jsx
@@ -192,7 +194,7 @@ npm start
 ### Start the backend and frontend with a single command
 17. Return to the root directory, initialize Node and install `concurrently`
 ```shell
-cd .. && npm init -y && npm i concurrently --save-dev
+cd ..; npm init -y;npm i concurrently --save-dev
 ```
 18. Make the following edits to `package.json`
 ```diff
@@ -303,7 +305,7 @@ it('renders numbers', async () => {
 ### Set up end to end tests with Cypress
 25. Install `cypress` in the client directory
 ```shell
-cd client && npm i cypress @testing-library/cypress --save-dev
+cd client; npm i cypress @testing-library/cypress --save-dev
 ```
 26. Make the following edit to `client/package.json`
 ```diff
@@ -372,7 +374,60 @@ it('should clear and insert numbers', () => {
 ```
 34. Run cypress from the root directory
 ```shell
-cd .. && npm run cypress
+cd ..; npm run cypress
 ```
 
 TODO: Configure ESLint, https://gist.github.com/textbook/3377dda14efe4449772c2377188c3fa8
+
+### Set up ESLint
+35. Install and configure ESLint in the server directory
+```shell
+cd server; npm install eslint --save-dev; npm init @eslint/config; cd ..
+```
+36. Make the following edits to `server/package.json`
+```diff
+"scripts": {
+  "start": "nodemon node",
+  "start:test": "nodemon node test",
++ "lint": "npx eslint .",
++ "lint:fix": "npx eslint . --fix"
+},
+```
+37. Install and configure ESLint in the client directory
+```shell
+cd client; npm i eslint --save-dev; npm i eslint-plugin-cypress --save-dev; npm init @eslint/config; cd ..
+```
+38. Make the following edits to `client/package.json`
+```diff
+"scripts": {
+  ...
+  "cypress": "cypress open",
++ "lint": "npx eslint .",
++ "lint:fix": "npx eslint . --fix"
+},
+```
+39. Make the following edits to `client/.eslintrc.json`
+```diff
+{
+    ...
++   "overrides": [
++       { 
++           "extends": [
++               "plugin:cypress/recommended"
++           ],
++           "files": [
++               "cypress/**/*.js"
++           ]
++       }
++   ]
+}
+```
+40. Make the following edits to `package.json`
+```diff
+"scripts": {
+  ...
+  "cypress": "concurrently \"npm run server:test\" \"npm run client\" \"cd client && npm run cypress\"",
++ "lint": "concurrently \"cd server && npm run lint\" \"cd client && npm run lint\"",
++ "lint:fix": "concurrently \"cd server && npm run lint:fix\" \"cd client && npm run lint:fix\""
+},
+```

@@ -1,25 +1,25 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
-import { Numbers } from './Numbers';
+import {render, screen} from '@testing-library/react';
+import {act} from 'react-dom/test-utils';
+import {Numbers} from './Numbers';
 
 it('renders numbers', async () => {
   // Mock the api
   let mockDB = [
     {'number': 0},
-    {'number': 99}
+    {'number': 99},
   ];
   jest.spyOn(global, 'fetch').mockImplementation((url) => {
-    switch(url) {
+    switch (url) {
       case '/api/get':
         return Promise.resolve({
-          json: () => Promise.resolve(mockDB)
+          json: () => Promise.resolve(mockDB),
         });
       case '/api/clear':
         mockDB = [];
         return Promise.resolve();
       case '/api/insert':
-        let number = Math.floor(Math.random() * 100);
+        const number = Math.floor(Math.random() * 100);
         mockDB.push(number);
         return Promise.resolve();
       default:
@@ -30,7 +30,7 @@ it('renders numbers', async () => {
   await act(async () => {
     render(<Numbers />);
   });
-  
+
   const listItems = screen.getAllByRole('listitem');
   expect(listItems).toHaveLength(2);
   expect(listItems[0].textContent).toBe('0');
