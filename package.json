@@ -6,10 +6,11 @@
   "scripts": {
     "install": "cd server && npm i && cd ../client && npm i",
     "server": "cd server && npm run start",
+    "server:test": "cd server && npm run start:test",
     "client": "cd client && npm run start",
+    "client:test": "cd client && npm test",
     "start": "concurrently \"npm run server\" \"npm run client\"",
-    "test": "cd client && npm test",
-    "cypress": "concurrently \"npm run server\" \"npm run client\" \"cd client && npm run cypress\""
+    "cypress": "concurrently \"npm run server:test\" \"npm run client\" \"cd client && npm run cypress\""
   },
   "repository": {
     "type": "git",

@@ -22,14 +22,14 @@ export function Numbers() {
   }
   const insertNumber = () => {
     fetch('/api/insert', {method: 'PUT'})
-      .then(() => getNumbers())
+      .then(() => getNumbers());
   }
   const clearNumbers = () => {
     fetch('/api/clear', {method: 'DELETE'})
-      .then(() => getNumbers())
+      .then(() => getNumbers());
   }
 
-  useEffect(() => getNumbers(), [])
+  useEffect(() => getNumbers(), []);
 
   let liKey = 0;
   if (error) {

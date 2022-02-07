@@ -39,7 +39,8 @@ app.listen(PORT, () => {
 + "main": "src/index.js",
 + "type": "module",
   "scripts": {
-+   "start": "nodemon node"
++   "start": "nodemon node",
++   "start:test": "nodemon node test"
   },
   ...
 }
@@ -94,22 +95,23 @@ import { NumbersDB } from './db.js';
 
 const PORT = 3001;
 const server = express();
-const db = new NumbersDB('./data/database.db');
+const db = new NumbersDB(
+  process.argv[2] === 'test' ? ':memory:' : './data/database.db');
 
 server.get('/api/get', (request, result) => {
   result.send(JSON.stringify(db.getNumbers()));
-})
+});
 
 server.put('/api/insert', (request, result) => {
   let number = Math.floor(Math.random() * 100);
   db.insertNumber(number);
   result.send();
-})
+});
 
 server.delete('/api/clear', (request, result) => {
   db.clearNumbers();
   result.send();
-})
+});
 
 server.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
@@ -148,14 +150,14 @@ export function Numbers() {
   }
   const insertNumber = () => {
     fetch('/api/insert', {method: 'PUT'})
-      .then(() => getNumbers())
+      .then(() => getNumbers());
   }
   const clearNumbers = () => {
     fetch('/api/clear', {method: 'DELETE'})
-      .then(() => getNumbers())
+      .then(() => getNumbers());
   }
 
-  useEffect(() => getNumbers(), [])
+  useEffect(() => getNumbers(), []);
 
   let liKey = 0;
   if (error) {
@@ -198,8 +200,9 @@ cd .. && npm init -y && npm i concurrently --save-dev
 "scripts": {
 + "install": "cd server && npm i && cd ../client && npm i",
 + "server": "cd server && npm run start",
++ "server:test": "cd server && npm run start:test",
 + "client": "cd client && npm run start",
-+ "start": "concurrently \"npm run server\" \"npm run client\""
++ "start": "concurrently \"npm run server\" \"npm run client\"",
 },
 ...
 ```
@@ -212,11 +215,10 @@ npm start
 20. Make the following edit to `package.json`
 ```diff
 "scripts": {
-  "install": "cd server && npm i && cd ../client && npm i",
-  "server": "cd server && npm run start",
+  ...
   "client": "cd client && npm run start",
++ "client:test": "cd client && npm test",
   "start": "concurrently \"npm run server\" \"npm run client\"",
-+ "test": "cd client && npm test"
 },
 ```
 21. Run the test
@@ -306,9 +308,7 @@ cd client && npm i cypress @testing-library/cypress --save-dev
 26. Make the following edit to `client/package.json`
 ```diff
 "scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
+  ...
   "eject": "react-scripts eject",
 + "cypress": "cypress open"
 },
@@ -365,12 +365,9 @@ it('should clear and insert numbers', () => {
 33. Make the following edit to `package.json`
 ```diff
 "scripts": {
-  "install": "cd server && npm i && cd ../client && npm i",
-  "server": "cd server && npm run start",
-  "client": "cd client && npm run start",
+  ...
   "start": "concurrently \"npm run server\" \"npm run client\"",
-  "test": "cd client && npm test",
-+ "cypress": "concurrently \"npm run server\" \"npm run client\" \"cd client && npm run cypress\""
++ "cypress": "concurrently \"npm run server:test\" \"npm run client\" \"cd client && npm run cypress\""
 },
 ```
 34. Run cypress from the root directory
