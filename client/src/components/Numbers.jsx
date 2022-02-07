@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {React, useEffect, useState} from 'react';
 
 export function Numbers() {
   const [error, setError] = useState(null);
@@ -8,26 +8,26 @@ export function Numbers() {
   const getNumbers = () => {
     setIsLoaded(false);
     fetch('/api/get', {method: 'GET'})
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setNumbers(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      );
-  }
+        .then((res) => res.json())
+        .then(
+            (result) => {
+              setIsLoaded(true);
+              setNumbers(result);
+            },
+            (error) => {
+              setIsLoaded(true);
+              setError(error);
+            },
+        );
+  };
   const insertNumber = () => {
     fetch('/api/insert', {method: 'PUT'})
-      .then(() => getNumbers());
-  }
+        .then(() => getNumbers());
+  };
   const clearNumbers = () => {
     fetch('/api/clear', {method: 'DELETE'})
-      .then(() => getNumbers());
-  }
+        .then(() => getNumbers());
+  };
 
   useEffect(() => getNumbers(), []);
 
@@ -41,7 +41,7 @@ export function Numbers() {
       <div>
         <h2>Numbers:</h2>
         <ul>
-          {numbers.map(number => (
+          {numbers.map((number) => (
             <li key={liKey++}>
               {number.number}
             </li>

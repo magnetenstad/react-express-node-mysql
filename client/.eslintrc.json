@@ -21,6 +21,9 @@
     "rules": {
     },
     "overrides": [
+        {
+            "files": ["*.jsx", "*.js"]
+        },
         { 
             "extends": [
                 "plugin:cypress/recommended"
@@ -29,5 +32,10 @@
                 "cypress/**/*.js"
             ]
         }
-    ]
+    ],
+    "settings": {
+        "react": {
+          "version": "detect"
+        }
+    }
 }

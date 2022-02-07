@@ -1,6 +1,7 @@
+import {React} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Numbers } from './components/Numbers';
+import {Numbers} from './components/Numbers';
 
 export default function App() {
   return (

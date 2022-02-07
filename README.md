@@ -128,7 +128,7 @@ cd ..; npx create-react-app client; cd client
 13. Create the following file
 ```jsx
 // client/src/components/Numbers.jsx
-import { useEffect, useState } from 'react';
+import {React, useEffect, useState} from 'react';
 
 export function Numbers() {
   const [error, setError] = useState(null);
@@ -138,26 +138,26 @@ export function Numbers() {
   const getNumbers = () => {
     setIsLoaded(false);
     fetch('/api/get', {method: 'GET'})
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setNumbers(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      );
-  }
+        .then((res) => res.json())
+        .then(
+            (result) => {
+              setIsLoaded(true);
+              setNumbers(result);
+            },
+            (error) => {
+              setIsLoaded(true);
+              setError(error);
+            },
+        );
+  };
   const insertNumber = () => {
     fetch('/api/insert', {method: 'PUT'})
-      .then(() => getNumbers());
-  }
+        .then(() => getNumbers());
+  };
   const clearNumbers = () => {
     fetch('/api/clear', {method: 'DELETE'})
-      .then(() => getNumbers());
-  }
+        .then(() => getNumbers());
+  };
 
   useEffect(() => getNumbers(), []);
 
@@ -171,7 +171,7 @@ export function Numbers() {
       <div>
         <h2>Numbers:</h2>
         <ul>
-          {numbers.map(number => (
+          {numbers.map((number) => (
             <li key={liKey++}>
               {number.number}
             </li>
@@ -182,6 +182,26 @@ export function Numbers() {
       </div>
     );
   }
+}
+```
+14. Delete `client/src/App.js` and create the following file
+```js
+// client/src/App.jsx
+import {React} from 'react';
+import logo from './logo.svg';
+import './App.css';
+import {Numbers} from './components/Numbers';
+
+export default function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Hello world!</h1>
+        <Numbers/>
+      </header>
+    </div>
+  );
 }
 ```
 15. Add `"proxy": "http://localhost:3001"` to `client/package.json`
@@ -411,6 +431,9 @@ cd client; npm i eslint --save-dev; npm i eslint-plugin-cypress --save-dev; npm 
 {
     ...
 +   "overrides": [
++       {
++           "files": ["*.jsx", "*.js"]
++       },
 +       { 
 +           "extends": [
 +               "plugin:cypress/recommended"
@@ -419,7 +442,12 @@ cd client; npm i eslint --save-dev; npm i eslint-plugin-cypress --save-dev; npm 
 +               "cypress/**/*.js"
 +           ]
 +       }
-+   ]
++   ],
++   "settings": {
++       "react": {
++         "version": "detect"
++       }
++   }
 }
 ```
 40. Make the following edits to `package.json`
