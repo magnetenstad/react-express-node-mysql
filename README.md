@@ -11,8 +11,8 @@ command | description
 `npm run cypress` | Runs end to end tests (Cypress)
 `npm run lint:fix` | Analyses and fixes code style (ESLint)
 
-## Steps to reproduce (~ 30 min)
-Note: this tutorial is written for the PowerShell terminal.
+## Steps to reproduce (~ 40 min)
+Note: this tutorial is written for the PowerShell terminal (The default integrated terminal in VSCode on Windows).
 
 1. Install Node.js from https://nodejs.org/en/ if you don't already have it installed
 
@@ -471,3 +471,5 @@ cd client; npm i eslint --save-dev; npm i eslint-plugin-cypress --save-dev; npm 
 ```shell
 echo DISABLE_ESLINT_PLUGIN=true`nESLINT_NO_DEV_ERRORS=true > client/.env
 ```
+42. Check for errors with `npm run lint` and fix them with `npm run lint:fix`
+
