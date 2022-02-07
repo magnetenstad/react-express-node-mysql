@@ -4,6 +4,7 @@
 ## Commands
 
 command | description
+--- | ---
 `npm run install:all` | Installs node modules in root, server and client directories
 `npm run start` | Starts both the server, and the client
 `npm run client:test` | Runs client unit tests (Jest)
