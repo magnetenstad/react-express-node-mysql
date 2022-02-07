@@ -224,7 +224,7 @@ npm start
 ### Start the backend and frontend with a single command
 17. Return to the root directory, initialize Node and install `concurrently`
 ```shell
-cd ..; npm init -y;npm i concurrently --save-dev
+cd ..; npm init -y; npm i concurrently --save-dev
 ```
 18. Make the following edits to `package.json`
 ```diff
@@ -406,8 +406,6 @@ it('should clear and insert numbers', () => {
 ```shell
 cd ..; npm run cypress
 ```
-
-TODO: Configure ESLint, https://gist.github.com/textbook/3377dda14efe4449772c2377188c3fa8
 
 ### Set up ESLint
 35. Install and configure ESLint in the server directory
